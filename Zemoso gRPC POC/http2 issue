@@ -1,0 +1,37 @@
+curl -vvv --http2 localhost:6868/post
+
+
+
+curl -v -H "Connection: Upgrade, HTTP2-Settings" -H "Upgrade: h2c" localhost:6868/post
+
+
+
+curl -v -H "Upgrade: h2c" localhost:6868/post
+
+
+
+
+docker run -it --rm --name envoy --network="host" -v "$(pwd)/reservation_service_definition.pb:/tmp/reservation_service_definition.pb:ro" -v "$(pwd)/envoy-config.yml:/etc/envoy/envoy.yaml:ro" envoyproxy/envoy:v1.14.1
+
+sudo docker run -it --rm --name envoy --network="host" -v "$(pwd)/cms.pb:/tmp/cms.pb:ro" -v "$(pwd)/envoy-config.yml:/etc/envoy/envoy.yaml:ro" envoyproxy/envoy:v1.14.1
+
+
+Step 1: Generate *.pb file by following command:
+	sudo protoc -I . src/main/resources/cms.proto --include_imports --include_source_info --descriptor_set_out=cms.pb src/main/resources/cms.proto
+
+Step 2: Generate *.pb and *-web.pb file (for react under reactAppsrc folder):
+	protoc -I=. helloworld.proto   --js_out=import_style=commonjs,binary:.   --grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
+
+Step 3: Deploy *.pb(generated in step 1) and envoy.yml using following command:
+	sudo docker run -it --rm --name envoy --network="host" -v "$(pwd)/cms.pb:/tmp/cms.pb:ro" -v "$(pwd)/envoy-config.yml:/etc/envoy/envoy.yaml:ro" envoyproxy/envoy:v1.14.1
+	
+	sudo docker run -it --rm --name envoy --network="host" -v "$(pwd)/envoy/cms.pb:/tmp/cms.pb:ro" -v "$(pwd)/envoy/envoy-config.yml:/etc/envoy/envoy.yaml:ro" envoyproxy/envoy:v1.14.1
+
+Sonarqube token : 2ea84666ee3a4882ba03601c21a1e26ec42ed54f
+	run sonarQube in docker:
+	docker run -d --name sonarqube -p 9000:9000 <image_name>
+	maven command:  mvn sonar:sonar -Dsonar.host.url=http:localhost:9000 -Dsonar.login=2ea84666ee3a4882ba03601c21a1e26ec42ed54f
+
+
+
+
